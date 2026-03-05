@@ -3,6 +3,27 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+
+# =========================
+# NODE / FRONTEND (React)
+# =========================
+node_modules/
+dist/
+dist-ssr/
+.npm/
+*.local
+
+# =========================
+# DOCKER / BANCO DE DADOS
+# =========================
+postgres_data/
+.data/
+
+# =========================
+# MAC OS (Caso use)
+# =========================
+.DS_Store
+
 # C extensions
 *.so
 
