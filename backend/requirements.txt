@@ -2,3 +2,7 @@ fastapi
 uvicorn
 sqlalchemy
 psycopg2-binary
+langchain
+langgraph
+langchain-google-genai
+langsmith

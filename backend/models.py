@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 Base = declarative_base()
 
-class StatusEnum(enum.Enum):
+class StatusEnum(str, enum.Enum):
       A_FAZER = "A_FAZER"
       EM_PROGRESSO = "EM_PROGRESSO"
       FEITO = "FEITO"
@@ -22,10 +22,10 @@ class Tarefa(Base):
 
       id = Column(Integer, primary_key=True, index=True)
       titulo = Column(String(255), nullable=False)
-      desc = Column(Text, nullable=255)
+      desc = Column(Text, nullable=True)
       status = Column(Enum(StatusEnum), default=StatusEnum.A_FAZER, nullable=False)
       criado_em = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
-      data_time = Column(Date, nullable=True)
+      data_limite = Column(DateTime, nullable=True)
 
       tags = relationship("Tag", secondary=tarefas_tags, back_populates="tarefas")
 
