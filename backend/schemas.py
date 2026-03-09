@@ -28,6 +28,7 @@ class CriarTarefa(BaseModel):
       desc: Optional[str] = None
       status: StatusEnum = StatusEnum.A_FAZER
       data_limite: Optional[datetime] = None
+      tags: Optional[list[str]] = None
 
 class AtualizarTarefa(BaseModel):
       titulo: Optional[str] = None
