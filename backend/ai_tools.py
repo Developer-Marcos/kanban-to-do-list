@@ -1,46 +1,91 @@
 import requests
 from langchain_core.tools import tool
 from typing import Union
+import requests
+import unicodedata
+from langchain_core.tools import tool
+from typing import Union
 
 API_BASE_URL = "http://localhost:8000"
 
-#Funcao auxiliar
-# Funcao auxiliar turbinada
+def remover_acentos(texto: str) -> str:
+    """Transforma 'Irmão' em 'irmao', 'Açúcar' em 'asucar', etc."""
+    if not texto: return ""
+    return "".join(
+        c for c in unicodedata.normalize('NFD', texto)
+        if unicodedata.category(c) != 'Mn'
+    ).lower()
+
 def buscar_id_por_nome(nome_busca: str) -> Union[int, str]:
-      """
-      Função auxiliar para buscar o ID de uma tarefa pelo nome.
-      Usa palavras-chave para encontrar correspondências aproximadas.
-      """
-      try:
-            resposta = requests.get(f"{API_BASE_URL}/tarefas")
-            if resposta.status_code != 200:
-                  return "Erro ao acessar o banco de dados para buscar tarefas."
-            
-            tarefas = resposta.json()
-            
-            # 1. Primeira tentativa: Busca exata (como estava antes)
-            encontradas = [t for t in tarefas if nome_busca.lower() in t["titulo"].lower()]
+    """
+    Versão 2.0: Busca inteligente com remoção de stop-words e normalização.
+    """
+    try:
+        # 1. Busca todas as tarefas
+        resposta = requests.get(f"{API_BASE_URL}/tarefas")
+        if resposta.status_code != 200:
+            return "Erro ao acessar o banco de dados."
+        
+        tarefas = resposta.json()
+        busca_original_limpa = remover_acentos(nome_busca)
+        
+        # --- PASSO A: TENTATIVA DE MATCH EXATO ---
+        for t in tarefas:
+            if busca_original_limpa == remover_acentos(t["titulo"]):
+                return t["id"]
 
-            # 2. Segunda tentativa: Busca por palavras-chave flexíveis
-            if not encontradas:
-                  # Pega palavras maiores que 3 letras (ignora 'a', 'de', 'pro')
-                  palavras_chave = [p for p in nome_busca.lower().split() if len(p) > 3]
-                  for t in tarefas:
-                        titulo_lower = t["titulo"].lower()
-                        # Se ALGUMA das palavras-chave estiver no título, a gente separa essa tarefa
-                        if any(palavra in titulo_lower for palavra in palavras_chave):
-                              encontradas.append(t)
+        # --- PASSO B: LIMPEZA DE STOP WORDS ---
+        # Palavras que a IA costuma adicionar e que "sujam" a busca
+        stop_words = [
+            "tarefa", "de", "da", "do", "o", "a", "os", "as", "um", "uma", 
+            "para", "com", "meu", "minha", "ir", "ver", "passar", "mudar", 
+            "colocar", "como", "no", "na", "status", "marcar", "finalizada"
+        ]
+        
+        # Filtra a busca para focar apenas nas palavras importantes
+        palavras_relevantes = [
+            p for p in busca_original_limpa.split() 
+            if p not in stop_words and len(p) > 2
+        ]
+        
+        # Se após o filtro não sobrar nada, voltamos para a busca original
+        if not palavras_relevantes:
+            palavras_relevantes = busca_original_limpa.split()
 
-            if not encontradas:
-                  return f"Nenhuma tarefa encontrada relacionada a '{nome_busca}'."
+        # --- PASSO C: BUSCA POR RANKING ---
+        ranking = []
+
+        for t in tarefas:
+            titulo_limpo = remover_acentos(t["titulo"])
+            # Conta quantos "pontos" a tarefa ganha baseado nas palavras relevantes
+            pontos = 0
+            for palavra in palavras_relevantes:
+                if palavra in titulo_limpo:
+                    pontos += 1
             
-            if len(encontradas) > 1:
-                  ids_nomes = [f"ID {t['id']} ({t['titulo']})" for t in encontradas]
-                  return f"Encontrei várias tarefas parecidas: {', '.join(ids_nomes)}. Por favor, especifique o ID ou seja mais específico."
+            if pontos > 0:
+                ranking.append((pontos, t))
+        
+        # Ordena: Tarefas com mais matches primeiro
+        ranking.sort(key=lambda x: x[0], reverse=True)
 
-            return encontradas[0]["id"]
-      except Exception as e:
-            return f"Erro na comunicação com a API: {str(e)}"
+        # --- PASSO D: ANÁLISE DO RESULTADO ---
+        if not ranking:
+            return f"Nenhuma tarefa encontrada para '{nome_busca}'."
+
+        # Se houver um vencedor claro (o 1º tem mais pontos que o 2º)
+        if len(ranking) == 1 or ranking[0][0] > ranking[1][0]:
+            return ranking[0][1]["id"]
+        
+        # Se houver empate técnico, pedimos esclarecimento
+        maior_pontuacao = ranking[0][0]
+        empatadas = [item[1] for item in ranking if item[0] == maior_pontuacao]
+        
+        ids_nomes = [f"#{t['id']} '{t['titulo']}'" for t in empatadas]
+        return f"Encontrei tarefas parecidas: {', '.join(ids_nomes)}. Qual delas você prefere?"
+
+    except Exception as e:
+        return f"Erro na busca: {str(e)}"
     
 
 

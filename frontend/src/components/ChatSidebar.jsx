@@ -13,7 +13,7 @@ const MensagemDigitando = () => (
   </div>
 );
 
-export function ChatSidebar() {
+export function ChatSidebar({ aoAtualizarBanco }) {
   const { t, i18n } = useTranslation();
   
   const [input, setInput] = useState("");
@@ -49,40 +49,48 @@ export function ChatSidebar() {
   }, [mensagens, isLoading]);
   
   const handleEnviar = async (e) => {
-    e.preventDefault();
-    if (!input.trim()) return;
+  e.preventDefault();
+  if (!input.trim()) return;
 
-    const textoEnviado = input;
-    setInput(""); 
+  const textoEnviado = input;
+  setInput("");
 
-    setMensagens(prev => [...prev, { id: Date.now(), role: 'user', texto: textoEnviado }]);
-    setIsLoading(true); 
+  setMensagens(prev => [...prev, { id: Date.now(), role: 'user', texto: textoEnviado }]);
+  setIsLoading(true); 
 
-    try {
-      const response = await fetch('http://localhost:8000/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          mensagem: textoEnviado, 
-          thread_id: "sessao-padrao-1" 
-        }),
-      });
+  try {
+    const response = await fetch('http://localhost:8000/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        mensagem: textoEnviado, 
+        thread_id: "sessao-padrao-1" 
+      }),
+    });
 
-      if (!response.ok) throw new Error("Erro na rede");
+    if (!response.ok) throw new Error("Erro na rede");
 
-      const data = await response.json();
+    const data = await response.json();
 
-      setMensagens(prev => [...prev, { id: Date.now(), role: 'ia', texto: data.resposta }]);
+    setMensagens(prev => [...prev, { id: Date.now(), role: 'ia', texto: data.resposta }]);
 
-    } catch (error) {
-      console.error("Erro ao enviar mensagem:", error);
-      setMensagens(prev => [...prev, { id: Date.now(), role: 'ia', texto: "Desculpe, tive um problema de conexão com o servidor." }]);
-    } finally {
-      setIsLoading(false); 
+    if (aoAtualizarBanco) {
+      aoAtualizarBanco();
     }
-  };
+
+  } catch (error) {
+    console.error("Erro ao enviar mensagem:", error);
+    setMensagens(prev => [...prev, { 
+      id: Date.now(), 
+      role: 'ia', 
+      texto: "Desculpe, tive um problema de conexão com o servidor." 
+    }]);
+  } finally {
+    setIsLoading(false); 
+  }
+};
 
   return (
     <aside className="relative w-[400px] bg-white/40 backdrop-blur-md border border-white/60 shadow-xl rounded-3xl flex flex-col overflow-hidden">

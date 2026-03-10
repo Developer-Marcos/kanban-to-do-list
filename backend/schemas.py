@@ -6,7 +6,6 @@ from models import StatusEnum
 class Tag(BaseModel):
       id: int
       nome: str
-      cor: Optional[str] = None
 
       class Config:
             from_attributes = True
@@ -35,3 +34,4 @@ class AtualizarTarefa(BaseModel):
       desc: Optional[str] = None
       status: Optional[StatusEnum] = None
       data_limite: Optional[datetime] = None
+      tags: Optional[List[str]] = None

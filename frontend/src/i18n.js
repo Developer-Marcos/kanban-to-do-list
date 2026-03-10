@@ -17,7 +17,9 @@ i18n.use(initReactI18next).init({
         "modal_limpar_titulo": "Limpar Chat",
         "modal_limpar_desc": "Tem certeza que deseja apagar o histórico dessa conversa?",
         "botao_cancelar": "Cancelar",
-        "botao_confirmar": "Apagar"
+        "botao_confirmar": "Apagar",
+        "label_criado_em": "Criado em",
+        "label_prazo": "Prazo"
       }
     },
     en: {
@@ -33,7 +35,9 @@ i18n.use(initReactI18next).init({
         "modal_limpar_titulo": "Clear Chat",
         "modal_limpar_desc": "Are you sure you want to delete this conversation history?",
         "botao_cancelar": "Cancel",
-        "botao_confirmar": "Delete"
+        "botao_confirmar": "Delete",
+        "label_criado_em": "Created at",
+        "label_prazo": "Deadline"
       }
     }
   },

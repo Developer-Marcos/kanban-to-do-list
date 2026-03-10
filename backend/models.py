@@ -25,7 +25,7 @@ class Tarefa(Base):
       desc = Column(Text, nullable=True)
       status = Column(Enum(StatusEnum), default=StatusEnum.A_FAZER, nullable=False)
       criado_em = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
-      data_limite = Column(DateTime, nullable=True)
+      data_limite = Column(DateTime(timezone=True), nullable=True)
 
       tags = relationship("Tag", secondary=tarefas_tags, back_populates="tarefas")
 
@@ -35,6 +35,5 @@ class Tag(Base):
       id = Column(Integer, primary_key=True, index=True)
       nome = Column(String(50), unique=True, nullable=False)
       desc = Column(Text, nullable=True)
-      cor = Column(String(7), nullable=True)
 
       tarefas = relationship("Tarefa", secondary=tarefas_tags, back_populates="tags")
