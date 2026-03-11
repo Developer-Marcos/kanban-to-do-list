@@ -172,7 +172,7 @@ const confirmarLimpeza = async () => {
             
             <div className="flex flex-col">
               <h2 className="text-gray-800 font-bold text-sm tracking-wide">
-                {t('assistente_kanban', 'Assistente Kanban')}
+                Kortex AI
               </h2>
               <div className="flex items-center gap-1.5 mt-0.5">
                 <div className="relative flex h-2 w-2">

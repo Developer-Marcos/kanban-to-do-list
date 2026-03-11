@@ -6,7 +6,6 @@ i18n.use(initReactI18next).init({
   resources: {
     pt: {
       translation: {
-        "assistente_kanban": "Assistente Kanban",
         "status": "Sempre online",
         "placeholder": "Mande um comando...",
         "coluna_fazer": "A Fazer",
@@ -24,7 +23,6 @@ i18n.use(initReactI18next).init({
     },
     en: {
       translation: {
-        "assistente_kanban": "Kanban Assistant",
         "status": "Always online",
         "placeholder": "Send a command...",
         "coluna_fazer": "To Do",
