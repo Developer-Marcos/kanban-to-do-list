@@ -1,4 +1,9 @@
-# Kortex AI - A Kanban agent 
+# Kortex AI — A Kanban agent 
+
+<p align="center">
+  <img src="./images/Kortex-AI-Title.png" alt="Kortex AI Logo" width="600">
+</p>
+
 **Kortex AI** is an *intelligent task management system* **(ReAct Agent)** that combines the visual clarity of a Kanban board with the *processing power of an **LLM-based AI Agent***. Unlike a typical to-do list, Kortex AI understands natural language, manages time contexts, and automatically organizes tags to optimize workflow.
 
 ---
