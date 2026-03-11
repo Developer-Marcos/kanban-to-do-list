@@ -12,6 +12,20 @@
 
 ---
 
+### Cognitive Task Inference
+
+One of Kortex AI's core strengths is its ability to understand complex, natural language prompts and transform them into structured data.
+
+- **Zero-Form Interaction:** No buttons or forms required. The agent extracts titles, descriptions, and deadlines directly from the conversation.
+- **Contextual Tagging:** Automatically categorizes tasks based on technical context (e.g., identifying "deployment" and "dev team" to suggest relevant tags).
+- **Smart Scheduling:** Understands relative dates like "next Monday" or "tomorrow morning" by anchoring the LLM to the current system time.
+
+| AI Chat Interaction | Generated Kanban Card |
+| :---: | :---: |
+| ![Chat](./images/Example-Kortex-Ai-chat.png) | ![Card](./images/Example-Kortex-Ai-card.png) |
+
+---
+
 ## Technologies Used:
 ### Frontend Stack:
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
