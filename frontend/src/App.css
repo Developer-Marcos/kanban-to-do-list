@@ -1,4 +1,3 @@
-/* Dentro do seu App.css ou index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,9 +12,6 @@
 }
 
 .fundo-animado-diagonal {
-  /* 🎯 PALETA REFINADA: 
-     Indigo (#a5b4fc), Roxo (#d8b4fe) e agora Azul Suave (#bae6fd) 
-     A sequência é repetida para o loop ser 100% invisível. */
   background-image: linear-gradient(
     135deg, 
     #a5b4fc, 
@@ -25,10 +21,6 @@
     #d8b4fe, 
     #bae6fd
   );
-  
-  /* Mantemos os 200% para o deslocamento encaixar perfeitamente */
   background-size: 200% 200%;
-  
-  /* 30s para um movimento quase imperceptível de tão suave */
   animation: gradientLoop 30s linear infinite;
 }

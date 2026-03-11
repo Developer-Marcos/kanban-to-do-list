@@ -2,7 +2,7 @@
 
 @keyframes breathe {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); } /* Aumenta 10% no meio do ciclo */
+  50% { transform: scale(1.1); }
 }
 
 .animate-breathe {

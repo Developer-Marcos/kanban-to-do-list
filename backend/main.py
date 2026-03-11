@@ -13,7 +13,9 @@ import models
 from database import engine, pegar_db
 from agent import agente
 from ai_tools import token_auth
+import traceback
 
+# Config inicial
 def inicializar_banco():
     try:
         models.Base.metadata.create_all(bind=engine)
@@ -44,8 +46,7 @@ ALGORITHM = "HS256"
 if SECRET_KEY == "chave_padrao_apenas_para_desenvolvimento_local":
     print("AVISO: Usando SECRET_KEY padrão. NÃO USAR EM PRODUCAO")
 
-# --- UTILITÁRIOS DE SEGURANÇA ---
-
+# helpers
 def gerar_token_sessao():
     usuario_id = str(uuid.uuid4())
     payload = {
@@ -64,43 +65,53 @@ def obter_usuario_logado(authorization: str = Header(None)):
     except Exception:
         raise HTTPException(status_code=401, detail="Sessão inválida ou expirada")
 
-# --- ROTAS DE SESSÃO E CHAT ---
-
+# Sessao
 @app.get("/gerar-sessao")
 def nova_sessao():
     return {"token": gerar_token_sessao()}
 
+
+# IA
 class ChatRequest(BaseModel):
     mensagem: str
+
 
 @app.post("/chat")
 def conversar_com_ia(
     request: ChatRequest, 
     db: Session = Depends(pegar_db), 
     usuario_id: str = Depends(obter_usuario_logado),
-    authorization: str = Header(None) # 🎯 1. Captura o Token que veio do React
+    authorization: str = Header(None)
 ):
     try:
-        # 🎯 2. Dá o "Crachá VIP" para a IA usar nas tools
         if authorization:
             token_auth.set(authorization)
 
-        db.add(models.MensagemChat(usuario_id=usuario_id, role="user", texto=request.mensagem))
-        
+        nova_msg_user = models.MensagemChat(usuario_id=usuario_id, role="user", texto=request.mensagem)
+        db.add(nova_msg_user)
+        db.commit() 
+
         resultado = agente.invoke(
             {"messages": [("user", request.mensagem)]}, 
             config={"configurable": {"thread_id": usuario_id}}
         )
         
-        resposta_ia = str(resultado["messages"][-1].content)
+        mensagens_ai = [m for m in resultado["messages"] if m.type == "ai" and m.content]
+        if not mensagens_ai:
+            resposta_ia = "Tarefa processada com sucesso!"
+        else:
+            resposta_ia = str(mensagens_ai[-1].content)
         
-        db.add(models.MensagemChat(usuario_id=usuario_id, role="ia", texto=resposta_ia))
-        
+        nova_msg_ia = models.MensagemChat(usuario_id=usuario_id, role="ia", texto=resposta_ia)
+        db.add(nova_msg_ia)
         db.commit()
+        
         return {"resposta": resposta_ia}
+
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail=str(e))
+        traceback.print_exc() 
+        raise HTTPException(status_code=500, detail="Erro interno. Verifique o log do servidor.")
 
 @app.get("/chat/historico")
 def obter_historico(db: Session = Depends(pegar_db), usuario_id: str = Depends(obter_usuario_logado)):
@@ -118,8 +129,7 @@ def limpar_historico(db: Session = Depends(pegar_db), usuario_id: str = Depends(
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
-# --- CRUD DE TAREFAS ---
-
+# Crud
 @app.get("/tarefas", response_model=List[schemas.Tarefa])
 def listar_tarefas(db: Session = Depends(pegar_db), usuario_id: str = Depends(obter_usuario_logado)):
     return db.query(models.Tarefa).filter(models.Tarefa.usuario_id == usuario_id).all()

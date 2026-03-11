@@ -1,5 +1,3 @@
-// src/components/MensagensChat.jsx
-
 export function MensagemIA({ texto }) {
   return (
     <div className="self-start w-5/6">

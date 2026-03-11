@@ -63,8 +63,6 @@ memoria = MemorySaver()
 agente = grafo.compile(checkpointer=memoria)
 
 
-
-
 # Teste no terminal
 if __name__ == "__main__":
       print(f"Agente iniciado com o modelo: {MODEL_NAME}")

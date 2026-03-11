@@ -1,4 +1,3 @@
-// src/components/ChatSidebar.jsx
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MensagemIA, MensagemUsuario } from './MensagensChat';
@@ -52,7 +51,6 @@ const confirmarLimpeza = async () => {
     });
 
     if (response.ok) {
-      // 2. Se o banco confirmou que apagou, a gente limpa a tela e fecha o modal
       setMensagens([{ id: 1, role: 'ia', texto: t('boas_vindas') }]);
       setMostrarConfirmacao(false);
     } else {
@@ -66,7 +64,7 @@ const confirmarLimpeza = async () => {
   useEffect(() => {
     const carregarHistorico = async () => {
       const token = localStorage.getItem('kanban_token');
-      if (!token) return; // Se não tem token, nem tenta buscar
+      if (!token) return;
 
       try {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/chat/historico`, {
@@ -121,7 +119,7 @@ const confirmarLimpeza = async () => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}` // 🎯 O passaporte para o banco
+      'Authorization': `Bearer ${token}`
     },
     body: JSON.stringify({ 
       mensagem: textoEnviado, 

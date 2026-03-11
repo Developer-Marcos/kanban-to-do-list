@@ -27,7 +27,6 @@ export function CardTarefa({ tarefa, isOverlay }) {
       {...(isOverlay ? {} : listeners)}   
       {...(isOverlay ? {} : attributes)} 
       style={style}
-      // 🎯 Mágica aplicada: Deixamos apenas o cursor e a transparência!
       className={`bg-white/70 backdrop-blur-md border border-white/50 p-4 rounded-xl shadow-sm transition-all group mb-3 relative overflow-hidden ${
         isOverlay 
           ? 'cursor-grabbing opacity-80 z-50' 

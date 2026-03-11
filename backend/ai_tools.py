@@ -7,7 +7,6 @@ from typing import Union
 
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000")
 
-# Variável de contexto para guardar o token da requisição atual
 token_auth = contextvars.ContextVar('token_auth', default="")
 
 def obter_headers():
@@ -24,7 +23,7 @@ def remover_acentos(texto: str) -> str:
 
 def buscar_id_por_nome(nome_busca: str) -> Union[int, str]:
     """
-    Versão 2.0: Busca inteligente com remoção de stop-words e normalização.
+    Busca inteligente com remoção de stop-words e normalização.
     """
     try:
         resposta = requests.get(f"{API_BASE_URL}/tarefas", headers=obter_headers(), timeout=20)
@@ -34,12 +33,10 @@ def buscar_id_por_nome(nome_busca: str) -> Union[int, str]:
         tarefas = resposta.json()
         busca_original_limpa = remover_acentos(nome_busca)
         
-        # --- PASSO A: TENTATIVA DE MATCH EXATO ---
         for t in tarefas:
             if busca_original_limpa == remover_acentos(t["titulo"]):
                 return t["id"]
 
-        # --- PASSO B: LIMPEZA DE STOP WORDS ---
         stop_words = [
             "tarefa", "de", "da", "do", "o", "a", "os", "as", "um", "uma", 
             "para", "com", "meu", "minha", "ir", "ver", "passar", "mudar", 
@@ -54,7 +51,6 @@ def buscar_id_por_nome(nome_busca: str) -> Union[int, str]:
         if not palavras_relevantes:
             palavras_relevantes = busca_original_limpa.split()
 
-        # --- PASSO C: BUSCA POR RANKING ---
         ranking = []
 
         for t in tarefas:
@@ -69,7 +65,6 @@ def buscar_id_por_nome(nome_busca: str) -> Union[int, str]:
         
         ranking.sort(key=lambda x: x[0], reverse=True)
 
-        # --- PASSO D: ANÁLISE DO RESULTADO ---
         if not ranking:
             return f"Nenhuma tarefa encontrada para '{nome_busca}'."
 
