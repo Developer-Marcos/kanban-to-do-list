@@ -23,6 +23,10 @@ One of Kortex AI's core strengths is its ability to understand complex, natural 
 | AI Chat Interaction | Generated Kanban Card |
 | :---: | :---: |
 | ![Chat](./images/Example-Kortex-Ai-chat.png) | ![Card](./images/Example-Kortex-Ai-card.png) |
+| ![Chat2](./images/Example-Kortex-Ai-chat-2.png) | ![Card2](./images/Example-Kortex-Ai-card-2.png) |
+
+![Main](./images/Kortex-AI-Example.png)
+
 ---
 
 ## Technologies Used:
