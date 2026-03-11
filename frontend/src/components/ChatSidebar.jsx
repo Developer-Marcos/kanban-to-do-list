@@ -151,7 +151,7 @@ const confirmarLimpeza = async () => {
   setMensagens(prev => [...prev, { 
     id: Date.now(), 
     role: 'ia', 
-    texto: "Ops, tive um probleminha na conexão. Pode tentar de novo?" 
+    texto: t("chat.connectionError")
   }]);
 } finally {
     setIsLoading(false); 

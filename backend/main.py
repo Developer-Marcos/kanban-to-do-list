@@ -100,7 +100,13 @@ def conversar_com_ia(
         if not mensagens_ai:
             resposta_ia = "Tarefa processada com sucesso!"
         else:
-            resposta_ia = str(mensagens_ai[-1].content)
+            conteudo = mensagens_ai[-1].content
+            if isinstance(conteudo, list):
+                resposta_ia = "".join(
+                    [bloco.get("text", "") for bloco in conteudo if isinstance(bloco, dict) and "text" in bloco]
+                )
+            else:
+                resposta_ia = str(conteudo)
         
         nova_msg_ia = models.MensagemChat(usuario_id=usuario_id, role="ia", texto=resposta_ia)
         db.add(nova_msg_ia)
@@ -110,6 +116,14 @@ def conversar_com_ia(
 
     except Exception as e:
         db.rollback()
+        erro_str = str(e).lower()
+        
+        if "429" in erro_str or "quota" in erro_str or "rate limit" in erro_str:
+             raise HTTPException(
+                 status_code=429, 
+                 detail="Kortex AI is experiencing high traffic. Please wait a moment and try again."
+             )
+        
         traceback.print_exc() 
         raise HTTPException(status_code=500, detail="Erro interno. Verifique o log do servidor.")
 

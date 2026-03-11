@@ -18,7 +18,8 @@ i18n.use(initReactI18next).init({
         "botao_cancelar": "Cancelar",
         "botao_confirmar": "Apagar",
         "label_criado_em": "Criado em",
-        "label_prazo": "Prazo"
+        "label_prazo": "Prazo",
+        "connectionError": "Ops, tive um probleminha na conexão. Pode tentar de novo?"
       }
     },
     en: {
@@ -35,7 +36,8 @@ i18n.use(initReactI18next).init({
         "botao_cancelar": "Cancel",
         "botao_confirmar": "Delete",
         "label_criado_em": "Created at",
-        "label_prazo": "Deadline"
+        "label_prazo": "Deadline",
+        "connectionError": "Oops, I had a little connection issue. Could you try again?"
       }
     }
   },
