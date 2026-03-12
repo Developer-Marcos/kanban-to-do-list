@@ -6,6 +6,13 @@
 
 **Kortex AI** is an *intelligent task management system* **(ReAct Agent)** that combines the visual clarity of a Kanban board with the *processing power of an **LLM-based AI Agent***. Unlike a typical to-do list, Kortex AI understands natural language, manages time contexts, and automatically organizes tags to optimize workflow.
 
+**[Test Kortex AI Live Here](https://kortex-frontend-1075947428559.us-east4.run.app)** 
+
+<p></p>
+
+*(Note: As the project is hosted on a serverless container environment, the first request might take a few seconds to "wake up" the application).*
+###### The tool is available in English and Brazilian Portuguese; at the top of the chat there is a button to change the language.
+
 ---
 
 ## Main features:
@@ -56,6 +63,7 @@ One of Kortex AI's core strengths is its ability to understand complex, natural 
 ### Infrastructure & Deploy
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![Google Cloud](https://img.shields.io/badge/GoogleCloud-%234285F4.svg?style=for-the-badge&logo=google-cloud&logoColor=white)
+![Neon DB](https://img.shields.io/badge/Neon_Postgres-000000?style=for-the-badge&logo=postgresql&logoColor=00E599)
 
 ---
 
@@ -90,6 +98,16 @@ graph LR;
         classDef first fill-opacity:0,stroke:#666,color:#aaa
         classDef last fill:#534a96,stroke:#7b6dfa,color:#fff
 ```
+
+### Cloud Architecture & Deployment:
+
+This application was architected to be Cloud-Native and is fully deployed in production using modern DevOps practices:
+
+* **Containerization & Hosting:** Both the React (Vite) Frontend and FastAPI Backend are containerized using **Docker** and deployed independently on **Google Cloud Run** (GCP), allowing for serverless execution and auto-scaling.
+* **Serverless Database:** The data layer is powered by **Neon (Serverless PostgreSQL)**, ensuring high availability, connection pooling, and seamless integration with the cloud backend.
+* **AI Observability & Tracing:** **LangSmith** is integrated into the production environment to trace the LangGraph agent's execution, monitor LLM (Gemini 2.5 Flash) token usage, and analyze the reasoning latency in real-time.
+* **Security & Networking:** Configured with strict CORS policies between the microservices and secure injection of environment variables during the Docker build and GCP runtime phases.
+
 ---
 
 ## How to use:
